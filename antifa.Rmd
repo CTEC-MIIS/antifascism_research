@@ -1,0 +1,226 @@
+---
+title: "antifa_analysis"
+author: "Alex Newhouse and Suria Vanrajah"
+date: "7/20/2020"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+## Introduction
+
+As a result of increased activism and publicity during the protests following George Floyd’s death at the hands of police officers, the antifascist movement — referred to colloquially as "antifa" — has been frequently invoked as an enemy by American right-wing politicians and communities. However, these _anti_-antifascist efforts and messages mischaracterize the nature of antifa and exaggerate its violence and ideologies. In this brief, CTEC investigates current mischaracterizations and conspiracy theories about antifa, the history of antifa. and antifascist participation in the Black Lives Matter protests of 2020. We explore and analyze the complex motivations, beliefs, and tactics used by the individuals and groups that make up the antifascist movement.
+
+## Portland protests
+
+At the time of this writing, the most high-profile American antifascist activism is occurring in Portland, OR. For over 50 days straight, Black Lives Matter activists, antifascists, and other protesters have demonstrated in front of the federal courthouse and Justice Center. Bellingcat reporter Robert Evans, who has been on the ground in Portland throughout the protests, [has described](https://www.bellingcat.com/news/americas/2020/07/20/what-you-need-to-know-about-the-battle-of-portland/) two distinct but adjacent movements: one large wave of nonconfrontational demonstrations that faded toward the end of June, and one smaller and more confrontational - but still primarily nonviolent - group of protesters who occupied the space near the Justice Center.
+
+The most destructive riot occurred early on, during the night of May 29 - the day after the Minneapolis Third Precinct building was burned. Stores and buildings across Portland were damaged and looted, as Evans and [Oregon Public Broadcasting's Rebecca Ellis reported](https://www.opb.org/news/article/portland-leaders-condemn-violence-that-followed-peaceful-protests/). The Justice Center was the locus of the riots, and it was damaged by fire, too. The Portland police used riot control measures, including tear gas, in an attempt to force the protesters to disperse.
+
+The protests at the Justice Center continued every night thereafter, and police forces frequently deployed tear gas, rubber bullets, and other riot control devices. Portland Police justified using tear gas and impact munitions by pointing to vandalism caused by the protesters as well as [instances of protesters throwing objects at police](https://twitter.com/PortlandPolice/status/1269178665855627264?ref_src=twsrc%5Etfw). However, the confrontation was significantly escalated when President Trump and the Department of Homeland Security deployed paramilitary forces in an attempt to stop the demonstrations. On July 15, [Oregon Public Broadcasting reported](https://twitter.com/PortlandPolice/status/1269178665855627264?ref_src=twsrc%5Etfw) that federal agents, dressed in camouflage but without agency designation or identification, were detaining protesters without explanation in unmarked vans. [DHS has since confirmed](https://www.cbp.gov/newsroom/speeches-and-statements/statement-cbp-response-portland-oregon) that the agents responsible are from Customs and Border Patrol, an agency that has jurisdiction within 100 miles of any border, whether with another country or with the ocean. This includes Portland.
+
+Since that point, the protests have grown much larger and more confrontational. Each night, federal agents barricade themselves in the Justice Center and Courthouse, and they use tear gas, impact munitions, and batons against the protesters. The demonstrations have continued to escalate, and dramatic video footage has shown pitched battles between federal agents and largely unarmed activists, including [tear gas and batons used against the "Wall of Moms."](https://twitter.com/MrOlmos/status/1286028995713064960?s=20) 
+
+While many different groups and individuals are involved in the demonstrations and confrontations with police, antifascists have played an important role in keeping them alive. In particular, Rose City Antifa and the Pacific Northwest Youth Liberation Front, a self-described "decentralized network of autonomous youth collectives," have been pivotal in pushing the protests forward. PNWYLF's Twitter feed has been amplifying calls to protest at the courthouse and Justice Center since late May. This report will discuss the PNWYLF in more detail later on.
+
+## Mischaracterization and Disinformation About Antifascists
+
+Despite the fact that Antifa is a decentralized and disparate movement, it has effectively become a catch-all term for right-wing pundits, influencers, and politicians to describe any direct action perceived as leftist in nature. The American Right is quick to point to antifa as the culprits in cases of violent or otherwise inflammatory protests, which it uses to discredit both antifa and peaceful activist groups. 
+
+Since the beginning of the Black Lives Matter protests, these efforts to discredit and mischaracterize antifa have grown into a widespread disinformation effort As [the Atlantic Council’s Digital Forensics Lab found](https://medium.com/dfrlab/the-disinformation-campaign-to-define-u-s-protesters-as-terrorists-3ea8db0a4881), “A disinformation campaign has gained traction across the United States, spreading fears of antifa ‘terrorism’ by way of largely spurious, decontextualized, or provably false claims. These fears have been cited by some U.S. officials as they push for a punitive law enforcement response and military deployments against overwhelmingly peaceful protesters. These fears have also sparked acts of targeted harassment, armed assaults, and general panic in American towns.” The DFRLab study discovered that articles and social media posts about antifa have been, in large part, extremely negative, driven by accounts supportive of the QAnon conspiracy theory community. The categorically false claim that antifa protestors are paid by George Soros and are aiming to start a race war has been a significant element of this campaign, as well. 
+
+These conspiracy theories and mischaracterizations have reached President Trump. Since the death of George Floyd, Trump has tweeted about either anarchists or antifa 44 times. Most of these tweets have conflated antifa with anarchism or described antifa as a discrete group, claims which are incorrect. This was punctuated by [a tweet on May 31](https://twitter.com/realdonaldtrump/status/1267129644228247552 ), in which Trump claims that he will declare antifa a terrorist organization. As CTEC Director Jason Blazakis [explained in a recent article](https://slate.com/news-and-politics/2020/06/antifa-terrorist-organization-designation-trump.html ), this is not possible. Even if antifa were a group, there is no mechanism in the United States to designate terrorist organizations that operate domestically. 
+
+In addition, [President Trump asserted](https://www.washingtonpost.com/politics/2020/06/09/trump-tweets-outrageous-conspiracy-theory-about-injured-buffalo-man/) that the elderly Buffalo man injured by police in a recent Black Lives Matter "could be an antifa provocateur" and publicly speculated that his injury was a "set up." This conspiracy theory had bubbled up to the highest level of the US government via One America News Network, which gained infamy earlier in 2020 for broadcasting a segment that alleged that George Soros, Bill Gates, China, and the "deep state" [are using COVID-19 for population control](https://www.mediamatters.org/one-america-news-network/oan-conspiracy-theory-links-covid-19-population-control-bill-gates-george).
+
+It is difficult to untangle the causal direction between the disinformation campaign on one hand and the endorsement of anti-antifa conspiracy theories on the other, but social media has, without a doubt, been inundated by dangerous, violent, and sometimes anti-Semitic and racist conspiracism about the antifascist movement over the last few months. 
+
+```{r}
+library(rtweet)
+library(tidyverse)
+library(tidytext)
+library(igraph)
+antifa <- search_tweets("antifa", n = 54000, include_rts = FALSE, retryonratelimit = TRUE)
+
+antifa %>% 
+  unnest(cols = "hashtags") %>% 
+  count(tolower(hashtags)) %>% 
+  arrange(desc(n))
+
+
+antifa %>% 
+  filter(grepl("soros|gates|nwo|zog", tolower(text)))
+
+
+antifa %>% 
+  select(text) %>% 
+  unnest_tokens(ngram, text, token="ngrams", n = 3) %>% 
+  filter(grepl("antifa", ngram)) %>% 
+  count(ngram) %>% 
+  arrange(desc(n))
+
+edges <- antifa %>% 
+  mutate(mentions = str_extract_all(text, "@[a-zA-Z0-9_]+")) %>% 
+  unnest(cols = mentions) %>% 
+  mutate(mentions = str_replace(mentions, "@", "")) %>% 
+  mutate(screen_name = tolower(screen_name)) %>% 
+  mutate(mentions = tolower(mentions)) %>% 
+  mutate(qanon = case_when(grepl("qanon|wwg1wga|pizzagate|clintonbodycount|maga|obamagate", tolower(text))~1,
+                           TRUE ~ 0)) %>% 
+  select(screen_name, mentions, qanon)
+
+nodes <- antifa %>% 
+  mutate(screen_name = tolower(screen_name)) %>% 
+  group_by(screen_name) %>% 
+  
+  summarise(retweets_total = sum(retweet_count)) %>% 
+  full_join(edges %>% select(mentions), by = c("screen_name" = "mentions")) %>% 
+  mutate(retweets_total = as.numeric(retweets_total)) %>% 
+  mutate(retweets_total = case_when(is.na(retweets_total) ~ 0,
+                                    !is.na(retweets_total) ~ retweets_total)) 
+
+
+nodes <- nodes %>% count(screen_name, retweets_total) %>% group_by(screen_name, retweets_total) %>% top_n(n = 1) %>% select(-n)
+
+f <- colorRamp(c("white", "blue"))
+
+
+nodes$color <- log(nodes$retweets_total / diff(range(nodes$retweets_total))+1)
+
+
+nodes$color <- rgb(f(nodes$color)/255)
+
+g <- graph_from_data_frame(edges, vertices = nodes)
+V(g)$size <- log(V(g)$retweets_total + 2) / 2
+E(g)$arrow.size <- .05
+E(g)$arrow.width <- .05
+#E(g)$width = .5
+#E(g)$color = ifelse(E(g)$qanon == 1, "maroon", "dark gray")
+E(g)$color <- "lightgray"
+E(g)$width <- .5
+
+visNetwork::visIgraph(g)
+
+
+```
+
+## Antifa Today
+
+Since discussion of antifa on both social and traditional media has been vulnerable to the influence of mis/disinformation, it is more important than ever to accurately depict it. The antifascist movement consists of 1) a loosely defined ideology and 2) a set of methods and tactics shared by its proponents. It is not a structured, unified group (as it is often portrayed). The closest antifa comes to an official ideology is (as the term antifascism suggests) an opposition to fascism, often more broadly interpreted as an opposition to oppression and authoritarianism in its many forms. However, individuals and groups associated with antifa interpret what exactly constitutes fascism, authoritarianism, and oppression, with [no clear consensus](https://www.reddit.com/search/?q=subreddit%3Aantifascistsofreddit%20what%20is%20fascism). Individuals and groups who support the antifa movement have publicly taken action against an array of issues and organizations, from resisting overt white supremacist groups, to protesting anti-immigration policies, to shouting down right-wing influencers, highlighting the diversity of antifa’s ideological mission. While the majority of antifascist collectives are associated with the anti-authoritarian, left-wing end of the political compass (which includes anarcho-syndicalism, libertarian socialism, and left-libertarianism), some antifascists are Marxists, Maoists, democratic socialists, even moderate liberals. 
+
+Similarly, the closest the antifascist movement comes to a coherent strategy is advocating for direct action against oppression and authoritarianism. Taking direct action means something different for each individual or group associated with antifa, creating a diverse array of tactics employed by the movement. Examples of direct action include more peaceful measures like [calling prisons to demand they address dangerous conditions](https://itsgoingdown.org/santa-rita-prisoners-demand-better-conditions/), as well as more extreme (and better-known) measures such as [the lighting of fires and destruction of property near the UC Berkeley campus](https://itsgoingdown.org/antifascists-won-battles-berkeley/) in protest of a talk by Milo Yiannopolous or [the punching of white supremacist Richard Spencer on television](https://phillyantifa.org/defend-the-richard-spencer-puncher/). Ultimately, the extent of permissible direct action is defined by each antifascist individual and local group. 
+
+Although antifa is commonly associated with these more violent measures, peaceful advocacy measures like the aforementioned phone banking efforts are also frequently employed as a form of direct action. In fact, antifascist activists are generally reluctant to escalate to violence. For example, one of the only publicly available guides for forming a local antifa group, produced by a self-proclaimed antifascist website, [cautions antifascists](https://itsgoingdown.org/forming-an-antifa-group-a-manual/) to avoid associating with those who simply want to cause violence as “physically confronting and defending against fascists is a necessary part of anti-fascist work, but is not the only or even necessarily the most important part." While antifascist activists have employed violent tactics, it is important to recognize that this violence is often seen as a means to an end or necessary for self-defense rather than the goal and is simply one tactic among many that antifascists use in their fight to confront and end fascism.
+
+In an attempt to create some organization within an inherently unstructured movement, local and national groups and collectives have emerged to help antifascists organize and take collective action. Perhaps the most visible of these groups, the [Torch Network](https://torchantifa.org/history/), is a national organization of self-proclaimed “militant antifascists” that was founded in 2013. Having emerged out of the (still extant) Anti-Racist Action Network, the Torch Network focuses on disrupting fascist and alt-right activity and opposing oppression both by working within their network and by allying themselves with groups and organizations with similar beliefs and goals. Aside from the support and structure offered by the eight chapters across the United States, the Torch Network publishes resources for antifascist action such as information on starting your own antifascist collective, best practices for organizing, and information on oppressive regimes and structures. Like the Torch Network, many other antifascist organizations have their own definitions of fascism-related terms as well as stances on tactics and methods. Alongside the Torch Network, the countless antifascist organizations and networks around the world provide support and guidance for antifascists looking to take action. 
+
+The Torch Network and adjacent activists have found significant success in resisting racist and white supremacist organizing via the Internet. This is due in part to the democratization of open-source research that has allowed some antifascists to become high-profile experts in "doxxing" (described more in depth below), and in part to the ability of the Internet to provide infrastructure for the development of robust national and transnational networks. This means that the six Torch Network chapters are central to the wider antifascist movement on Twitter, but as shown in the diagram below, there are many more influential social media activists beyond them (Torch Network accounts are shaded orange).
+
+```{r}
+library(rtweet)
+library(tidyverse)
+library(igraph)
+
+af_friends <- get_friends('TorchAntifa')
+
+df <- tibble(user=NA, target=NA)
+
+for(i in af_friends$user_id[1:428]){
+  temp <- get_friends(i, retryonratelimit = TRUE)
+  for(j in temp$user_id){
+    df <- df %>% rbind(tibble(user = i, target = j))
+    
+  }
+}
+
+ids <- unique(c(df$user, df$target))
+
+names <- lookup_users(ids)
+
+df_names <- names %>% filter(FALSE)
+for(i in ids){
+  temp <- lookup_users(i)
+  df_names <- df_names %>% rbind(temp)
+}
+
+
+
+df %>% 
+  filter(!is.na(user)) %>% 
+  left_join(df_names %>% select(user_id, "target_screen_name" = screen_name), by = c("target" = "user_id")) %>% 
+  left_join(df_names %>% select(user_id, "origin_screen_name" = screen_name), by = c("user" = "user_id")) %>% 
+  select(origin_screen_name, target_screen_name) %>%
+  graph_from_data_frame() -> k
+
+k <- k %>% igraph::simplify()
+#V(k)$size <- log(degree(k)) / 10
+
+torch <- c("AntifaSac_", "RckyMtnAntifa", "RoseCityAntifa", "afainatl", "PNWAWC", "ash_antifa", "TorchAntifa")
+
+V(k)$color <- ifelse(V(k)$name %in% torch, "orange", "lightblue")
+E(k)$width <- .5
+V(k)$size <- log(degree(k)) * 10
+E(k)$color <- "lightgray"
+library(visNetwork)
+visIgraph(k)
+
+
+```
+
+It is important to note, though, that antifascist networks are primarily information-sharing and -gathering networks. In spite of what some politicians, influencers, and pundits have alleged, there is virtually no evidence of any overarching leadership, sophisticated coordination, or state sponsorship of the antifascist movement. The Torch Network and the PNWYLF exist to support and amplify antifascist individuals, and evidence suggests that chapters are structured in accordance with their own philosophies of autonomy, anarchist governance, and direct democracy. 
+
+## Contemporary Antifascist Tactics
+
+The unifying feature of the antifascist movement is a belief in the necessity of direct action to confront and intimidate fascists, especially those who attempt to organize or demonstrate. The term "direct action" has many different meanings, but in its simplest form, it refers to action outside of the scope of electoral politics. This includes a spectrum from letter writing, online identification of fascists, and street protests, all the way to shouting down speakers and brawling with fascist demonstrators and police. As cited in antifascist historian Mark Bray’s book on the movement, one antifascist described their approach to direct action as: "You fight them by writing letters and making phone calls so you don’t have to fight them with fists. You fight them with fists so you don’t have to fight them with knives. You fight them with knives so you don’t have to fight them with guns. You fight them with guns so you don’t have to fight them with tanks" (169). 
+
+Many antifascists are nonetheless extremely reluctant to use violence, and most who have committed violence or are willing to do so believe that it is necessary for self-defense and in the defense of marginalized groups. However, their conception of self-defense goes beyond the philosophy of “stand your ground” laws in the U.S.: rather than wait for fascist violence to start, many antifascists would preemptively strike in order to intimidate fascists from ever even getting violent in the first place (Bray, 169). This manifests in outright hostility toward so-called "peace police" who are nonviolent demonstrators who attempt to shame and redirect other protestors who graffiti, destroy property, or attempt to physically confront police. As shown in the posts and interviews [published by antifascist website "It's Going Down,"](https://itsgoingdown.org/time-put-peace-police-rest/ ) the movement has seen peace police as a hindrance for their cause for years.  Further, experiences in [Seattle's recent Capitol Hill Organized Protest (CHOP)](https://www.cnn.com/2017/02/01/us/milo-yiannopoulos-berkeley/index.html) have shown that there is tension between protesters who believe in “militant defense” and those who are willing to more directly escalate with police. 
+
+In this section, we will explore the spectrum of tactics that antifascists use to achieve their goals.
+
+#### Peaceful protests and civil disobedience
+
+#### Letter-writing and PR campaigns
+
+#### Deplatforming
+
+For the past few years, one of the focuses of antifascist organizing has been on denying white nationalists, white supremacists, and fascists the legitimization that comes from having a platform, whether that is in the real world or on the Internet. This has caused controversy and condemnation, even from individuals and groups on the left, due to the tactic's contempt for the classical liberalist conception of free speech and discourse. 
+
+In _Antifa_, Mark Bray lays out a number of different justifications and arguments put forth by antifascists. Some antifa individuals and collectives hold that shouting down, lobbying, disruptive sit-ins, or other nonviolent deplatforming techniques are enshrined as freedom of speech themselves, promoting the adage that "you have a right to speak, _not_ a right to be heard." Others
+
+#### Autonomous Zones
+
+The idea of declaring a small area independent from centralized government oversight is not new. Antifascist and anarchist movements have long worked to establish self-governing collectives across the globe. For instance, during the Spanish Civil War, anarchist and antifascist collectives temporarily controlled a large swath of territory, called Revolutionary Catalonia. Even further back, the Paris Commune of 1871 was perhaps the first example of a modern anarchist-adjacent autonomous zone. One of the most famous AZs is Freetown Chirstiania, a permanent, semi-autonomous region in Copenhagen that has held varying levels of independence from Danish law since the 1970s. Today, Christiania is a tourist destination as much as a self-governing region.
+
+In spite of the tactic's spotty success record and tendency to spark harsh suppression from state forces, AZs remain an important tool for antifascist activism. While more common among _anarchist_ activism broadly construed, the last few years have had several examples of AZs playing major roles in antifascist social movements. In Syria, anti-authoritarian forces have established mutual aid and self-government structures in the Autonomous Administration of North and East Syria (usually referred to by the Kurdish term Rojava). In revolution against Bashar al-Assad's authoritarian government, the Rojava autonomous zone has implemented grassroots direct-democratic governing structures, emphasized environmentalism and gender equality, and enshrined religious tolerance. However, there have also been occasional allegations raised of war crimes and lack of democratic transparency.
+
+In the United States, Seattle's Capitol Hill Organized Protest was originally an effort to establish a permanent counterweight to police forces in the city, one that would ideally give activists a stronger negotiating position with the city government. It was established by a collection of different movements, most prominent among them Black Lives Matter and antifa. On June 8, after several nights of widespread unrest and significant use of tear gas and pepper spray by police, Seattle antifascists and Black Lives Matter demonstrators declared a six-block autonomous zone around the Capitol Hill precinct building. This resulted from the Seattle Police Department abandoning the district, apparently due to [suspicion that property destruction and arson against the precinct building were imminent](https://twitter.com/gramsofgnats/status/1270168381233102848?s=20). The autonomous zone was declared later that night, as protestors began setting up barricades and putting up signs throughout the district. It was later expanded to include a park that became an encampment for protesters, activists, and local displaced people.
+
+The CHOP had some positive success as a result of many activists' focus on establishing mutual aid. Stations were set up that provided all manner of free resources, from [literature](https://twitter.com/chaz_updates/status/1271117288989773826?s=20), to gardens and [food](https://seattle.eater.com/2020/6/18/21293916/seattle-protest-zone-chop-chaz-capitol-hill-food-eating). [Mayor Jenny Durkan described the CHOP](https://www.politico.com/news/magazine/2020/06/15/dont-listen-to-fox-heres-whats-really-going-on-in-seattles-protest-zone-321507) more as a "block party" than a rebellion or protest, a characterization that garnered criticism from activists and applause from right-wing media. However, the CHOP would more accurately be compared to Occupy Wall Street, as a daytime party atmosphere existed alongside [serious demands](https://medium.com/@seattleblmanon3/the-demands-of-the-collective-black-voices-at-free-capitol-hill-to-the-government-of-seattle-ddaee51d3e47) and organizational efforts.
+
+However, in contrast with the Occupy Wall Street movement, the fact that the CHOP's main adversary was the police created an unstable situation from the beginning. After establishing the autonomous zone, activists and protesters had to tackle the question of security. Early on, after reports that the far-right Proud Boys were seen in the vicinity of the zone, the antifascist John Brown Gun Club, which advocates for arming left-wing and marginalized communities, deployed to the streets in an attempt to deter right-wing activity. 
+
+#### Violent protests
+
+#### Black Bloc
+
+Perhaps the most famous and least understood antifascist tactic is the Black Bloc. This is not a discrete group, nor is it a catch-all term for antifa or the antifascist movement. Rather, it is an on-the-ground tactic deployed by antifascist activists that is designed to produce strength in numbers while maintaining anonymity for participants. At its core, it involves a group of activists dressed in all black with their faces covered who move and march in close proximity, thus appearing as a single mass of unidentifiable people.
+
+This strategy evolved in Germany during the 1970s and 80s among the autonomous movement, who often organized to resist police action, especially when it was targeted against squatters. It has been adopted by American networks and activists, too, most famously during the 2017 protests in Berkeley, CA, against a planned appearance by far-right agitator and influencer Milo Yiannopoulis. During this protest, a black bloc managed to shut down the speech by destroying property near the venue.  Many viewed the actions as justifiable, as Yiannopoulis had planned to publicize the names of undocumented Berkeley students, while [reports of planned Immigration and Customs Enforcement raids](https://www.newsweek.com/2017/02/24/berkeley-protest-milo-yiannopoulos-black-bloc-556264.html) in the San Francisco area were building.
+
+During the 2020 Black Lives Matter protests, antifascists and antiracists have used black bloc tactics several times. Journalist Robert Evans has documented a few instances, including witnessing a small number of black bloc activists [using a dumpster as a barricade](https://twitter.com/IwriteOK/status/1276410096201764867?s=20). However, the motivation behind black bloc - to mask identities and find protection in large groups - have diffused throughout the entire protest movement to the point that it is difficult to distinguish a non-black bloc protest. Further, as a result of its connection with the Berkeley protests, the term "black bloc" is now used by right-wing influencers and media as a scare tactic and political weapon.
+
+#### Doxxing
+
+Since the risks that come with in-person confrontation are high and some antifascists do not wish to escalate violence, a significant portion of the movement also dedicates itself to online activism and direct action (one headline from _The Nation_ [even proclaims](https://www.thenation.com/article/politics/antifa-online/), “How to Be an Antifascist From Your Couch"). A small but dedicated group of antifascists now spend hours collecting and analyzing open-source intelligence (OSINT) in an effort to track, monitor, and expose far-right groups and individuals. Doxxing, or exposing the personal information of someone online, has become a core tactic in antifascists’ struggle against authoritarians, far-right extremists, and fascists. Although just one piece of broader antifascist research efforts, the identities that are discovered by these antifa OSINT practitioners will often be publicized, and antifascists will call employers and family members and amplify warnings about the doxxed person’s actions and beliefs. A prominent researcher who goes by the username AntiFash Gordon told CTEC that, in essence, doxxing is the digital equivalent of traditional antifascist tactics: the goal is to hold fascists accountable and create significant negative impacts for their organizing and beliefs. 
+
+In addition, doxxing can serve as a deterrence force. The collective that runs the Panic! At the Discord Twitter account has amassed a significant social media following by focusing on identifying users from leaks of Discord channels published by Unicorn Riot and the leak of the Iron March database. They told CTEC over email that doxxing allows for activists to "force confrontation between the public/private orbits of a person who has been outed as a white supremacist/white nationalist/neo-nazi/fascist and their myriad front groups like Proud Boys, the Boogaloo Bois, American Guard, Patriot Front, American Identity Movement and any new re-brands as they emerge." The idea, they explained, is to force white supremacists or fascists "to make a choice about whether or not to continue working towards genocide or lose all their social connections."
+
+Many of the most prominent antifascist groups devote significant time to the identification of fascists and white supremacists, but this activism, due to its low barrier to entry, also includes a diversity of researchers. Specific groups are often first to confirm identities; for example, the Colorado Springs Anti-Fascists, in conjunction with the Long Beach and Northern Colorado groups, [tracked down](https://twitter.com/COSAntiFascists/status/1266497942300614659?s=20) information about the woman who attempted to ram a protestor in Denver, less than 24 hours after the ramming occurred. The woman [has now been charged](https://www.9news.com/article/news/investigations/woman-accused-hitting-george-floyd-protester-charges/73-13b4925a-479e-4e63-8cc1-31f1f8a3c755) with assault and reckless driving. The Pegasus Anti-Fascist Action group, meanwhile, [very quickly found the real identity of WarHippie](https://angrywhitemen.org/2020/06/06/an-armed-neo-nazi-traveled-to-dallas-for-a-race-war-and-was-immediately-idd/), who CTEC investigated as a member of the white supremacist fringe of the Boogaloo Movement. 
+
+Individual antifascist researchers are powerful voices in the doxxing effort, too. AntiFash Gordon [teaches research, privacy, and security skills to aspiring activists](https://gen.medium.com/antifas-keyboard-warriors-254f62be2a95). Emily Gorcenski created several important projects, such as [a tracker of court proceedings of far-right extremists](https://first-vigil.com), a compilation and exploration of [white supremacists' private lives](https://howhatesleeps.com), and a website that [monitors the removal of statues that commemorate Confederate, colonial, or otherwise racist individuals](https://whentheycamedown.com). Gorcenski also works on in-depth digital investigations of far-right identities.
+
+
+
